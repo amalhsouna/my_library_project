@@ -9,6 +9,11 @@ def book_list(request):
     books = Book.objects.all()
     return render(request, 'library/book_list.html', {'books': books})
 
+def book_detail(request, book_id):
+    # Récupérer un livre spécifique avec l'ID fourni
+    book = Book.objects.get(id=book_id)
+    return render(request, 'library/book_detail.html', {'book': book})
+
 @login_required
 def borrow_book(request, book_id):
     book = Book.objects.get(id=book_id)
