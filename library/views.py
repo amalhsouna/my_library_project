@@ -3,14 +3,26 @@ from django.shortcuts import render
 # Create your views here.
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from .models import Book, Borrow
 
 def book_list(request):
-    books = Book.objects.all()
-    return render(request, 'library/book_list.html', {'books': books})
+    query = request.GET.get('q')  # Retrieve search parameter
+    print("Requête de recherche : ", query)
+    if query:
+        books = Book.objects.filter(title__icontains=query)  # Filter books by title
+    else:
+        books = Book.objects.all()  # if you don't have filter => ALL  books
+
+      # Pagination
+    paginator = Paginator(books, 3)  # 6 books by page
+    page_number = request.GET.get('page')  # Get page number
+    page_obj = paginator.get_page(page_number)  # Get books from the requested page
+
+    return render(request, 'library/book_list.html', {'page_obj': page_obj, 'query': query})
 
 def book_detail(request, book_id):
-    # Récupérer un livre spécifique avec l'ID fourni
+    # get a specific book with ID
     book = Book.objects.get(id=book_id)
     return render(request, 'library/book_detail.html', {'book': book})
 
