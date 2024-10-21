@@ -5,6 +5,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from .models import Book, Borrow
+from .utils import formater_titre
 
 def book_list(request):
     query = request.GET.get('q')  # Retrieve search parameter
@@ -14,6 +15,8 @@ def book_list(request):
     else:
         books = Book.objects.all()  # if you don't have filter => ALL  books
 
+    for book in books:
+        book.title = formater_titre(book.title)
       # Pagination
     paginator = Paginator(books, 3)  # 6 books by page
     page_number = request.GET.get('page')  # Get page number
