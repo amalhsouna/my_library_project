@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from .forms import BookForm
 from .models import Book, Borrow
 from .utils import formater_titre
 
@@ -28,6 +29,17 @@ def book_detail(request, book_id):
     # get a specific book with ID
     book = Book.objects.get(id=book_id)
     return render(request, 'library/book_detail.html', {'book': book})
+
+def add_book(request):
+    if request.method == 'POST':
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('book_list')  
+    else:
+        form = BookForm()
+
+    return render(request, 'library/add_book.html', {'form': form})
 
 @login_required
 def borrow_book(request, book_id):

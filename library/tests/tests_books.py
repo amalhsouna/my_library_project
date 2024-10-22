@@ -1,6 +1,7 @@
 from django.test import TestCase
+from ..models import Book 
+from django.urls import reverse 
 
-from .models import Book  
 class BookModelTest(TestCase):
 
     def setUp(self):
@@ -11,6 +12,6 @@ class BookModelTest(TestCase):
         self.assertEqual(self.book.title, 'Django for Beginners')
     
     def test_view_url_exists(self):
-        response = self.client.get(reversed('book_list'))
+        response = self.client.get(reverse('book_list'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'library/book_list.html')
